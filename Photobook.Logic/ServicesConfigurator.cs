@@ -1,8 +1,12 @@
-﻿using MediatR;
+﻿using IdentityServer4.AspNetIdentity;
+using IdentityServer4.Configuration;
+using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Photobook.Data;
+using Photobook.Logic.Identity;
+using Photobook.Logic.Validators;
 using Photobook.Models.Identity;
 using System.Reflection;
 
@@ -14,14 +18,31 @@ namespace Photobook.Logic
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
 
-            services
-                .AddDefaultIdentity<PhotobookUser>()
-                .AddRoles<PhotobookRole>()
-                .AddEntityFrameworkStores<PhotobookDbContext>();
+            services.AddDefaultIdentity<PhotobookUser>()
+                    .AddRoles<PhotobookRole>()
+                    .AddEntityFrameworkStores<PhotobookDbContext>()
+                    .AddDefaultTokenProviders()
+                    .AddPasswordValidator<PasswordValidator>();
 
-            services.AddIdentityServer().AddApiAuthorization<PhotobookUser, PhotobookDbContext>();
+            services.AddIdentityServer(options =>
+            {
+                options.UserInteraction = new UserInteractionOptions()
+                {
+                    LogoutUrl = "http://localhost:3000/login",
+                    LoginUrl = "http://localhost:3000/success",
+                    ErrorUrl = "http://localhost:3000/error"
+                };
+            })
+            .AddInMemoryClients(Config.GetClients())
+            .AddInMemoryIdentityResources(Config.GetIdentityResources())
+            .AddInMemoryApiResources(Config.GetApis())
+            .AddInMemoryApiScopes(Config.GetScopes())
+            .AddProfileService<ProfileService<PhotobookUser>>()
+            .AddResourceOwnerValidator<ResourceOwnerPasswordValidator>()
+            .AddDeveloperSigningCredential();
 
-            services.AddAuthentication().AddIdentityServerJwt();
+            services.AddAuthentication()
+                    .AddIdentityServerJwt();
 
             services.AddAuthorization(options =>
             {

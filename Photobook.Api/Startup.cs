@@ -4,8 +4,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using NSwag;
+using NSwag.AspNetCore;
+using NSwag.Generation.Processors.Security;
 using Photobook.Data;
 using Photobook.Logic;
+using Photobook.Models.Configuration;
+using Photobook.Notifications;
+using System;
+using System.Collections.Generic;
 
 namespace Photobook.Api
 {
@@ -21,45 +28,40 @@ namespace Photobook.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<AppOptions>(Configuration.GetSection(AppOptions.AppConfiguration));
             services.AddData(Configuration);
             services.AddLogic();
+            services.AddNotifications();
             services.AddHttpContextAccessor();
             services.AddControllers();
 
             services.AddCors(opt =>
             {
                 opt.AddPolicy("CorsPolicy",
-                    policy => { policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000/"); });
+                    policy => { policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); });
             });
-            services.AddSwaggerGen(c =>
+            services.AddOpenApiDocument(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MoviePass", Version = "v1" });
-                OpenApiSecurityScheme securityDefinition = new OpenApiSecurityScheme()
-                {
-                    Name = "Bearer",
-                    BearerFormat = "JWT",
-                    Scheme = "bearer",
-                    Description = "Specify the authorization token.",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.Http,
-                };
-                c.AddSecurityDefinition("jwt_auth", securityDefinition);
+                options.DocumentName = "v1";
+                options.Title = "Protected API";
+                options.Version = "v1";
 
-                // Make sure swagger UI requires a Bearer token specified
-                OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme()
+                options.AddSecurity("oauth2", new NSwag.OpenApiSecurityScheme
                 {
-                    Reference = new OpenApiReference()
+                    Type = OpenApiSecuritySchemeType.OAuth2,
+                    Flows = new NSwag.OpenApiOAuthFlows
                     {
-                        Id = "jwt_auth",
-                        Type = ReferenceType.SecurityScheme
+                        AuthorizationCode = new NSwag.OpenApiOAuthFlow
+                        {
+                            AuthorizationUrl = "https://localhost:5001/connect/authorize",
+                            TokenUrl = "https://localhost:5001/connect/token",
+                            Scopes = new Dictionary<string, string> { { "openid", "Demo API - full access" } }
+                        }
                     }
-                };
-                OpenApiSecurityRequirement securityRequirements = new OpenApiSecurityRequirement()
-                {
-                    {securityScheme, new string[] { }},
-                };
-                c.AddSecurityRequirement(securityRequirements);
+                });
+                options.OperationProcessors.Add(new OperationSecurityScopeProcessor("oauth2"));
             });
+            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -68,15 +70,28 @@ namespace Photobook.Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Photobook.Api v1"));
+                app.UseOpenApi();
+                app.UseSwaggerUi3(settings =>
+                {
+                    settings.OAuth2Client = new OAuth2ClientSettings
+                    {
+                        AppName = "Demo API - Swagger",
+                        ClientId = "service.client",
+                        ClientSecret = "secret",
+                        UsePkceWithAuthorizationCodeGrant = true
+                    };
+                });
             }
 
             app.UseHttpsRedirection();
-
+            app.UseStaticFiles();
             app.UseRouting();
 
+            app.UseIdentityServer();
+
             app.UseAuthorization();
+
+            app.UseCors("CorsPolicy");
 
             app.UseEndpoints(endpoints =>
             {

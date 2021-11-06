@@ -8,11 +8,13 @@
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="5.0.11" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="5.0.11" />
+    <PackageReference Include="NJsonSchema" Version="10.5.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Photobook.Data\Photobook.Data.csproj" />
     <ProjectReference Include="..\Photobook.Models\Photobook.Models.csproj" />
+    <ProjectReference Include="..\Photobook.Notifications\Photobook.Notifications.csproj" />
   </ItemGroup>
 
 </Project>

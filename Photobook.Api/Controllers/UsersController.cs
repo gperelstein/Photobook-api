@@ -20,7 +20,7 @@ namespace Photobook.Api.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         [Produces("application/json")]
         [OpenApiOperation(
             summary: "List available languages",
@@ -33,6 +33,21 @@ namespace Photobook.Api.Controllers
             var result = await _mediator.Send(request, cancellationToken);
 
             return Ok(result);
+        }
+        
+        [HttpPost("register")]
+        [Produces("application/json")]
+        [OpenApiOperation(
+            summary: "asgasdgeas",
+            description: "adgasdgasdg"
+        )]
+        [SwaggerResponse(HttpStatusCode.OK, typeof(string), Description = "Ok")]
+        [SwaggerResponse(HttpStatusCode.InternalServerError, typeof(ValidationProblemDetails), Description = "Error while processing the request")]
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterUser.Command request, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(request, cancellationToken);
+
+            return Ok("Todo bien");
         }
     }
 }
