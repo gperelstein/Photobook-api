@@ -84,7 +84,7 @@ namespace Photobook.Logic.Services
             }
 
             if (!user.IsActive)
-                throw new Exception("This account is currently deactivated. If you feel this is an error, please contact your school.");
+                throw new Exception("This account is currently deactivated.");
 
             context.IsActive = true;
         }

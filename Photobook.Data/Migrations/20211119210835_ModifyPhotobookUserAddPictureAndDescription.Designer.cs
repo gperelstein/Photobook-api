@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Photobook.Data;
 
 namespace Photobook.Data.Migrations
 {
     [DbContext(typeof(PhotobookDbContext))]
-    partial class PhotobookDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211119210835_ModifyPhotobookUserAddPictureAndDescription")]
+    partial class ModifyPhotobookUserAddPictureAndDescription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

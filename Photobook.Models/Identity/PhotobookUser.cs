@@ -6,5 +6,7 @@ namespace Photobook.Models.Identity
     public class PhotobookUser : IdentityUser<Guid>
     {
         public bool IsActive { get; set; }
+        public string Picture { get; set; }
+        public string Description { get; set; }
     }
 }
