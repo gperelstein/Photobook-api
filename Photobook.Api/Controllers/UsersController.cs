@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
+using Photobook.Common.HandlersResponses;
 using Photobook.Logic.Features.Users;
-using Photobook.Logic.Features.Users.Responses;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,31 +23,43 @@ namespace Photobook.Api.Controllers
         [HttpPost("create")]
         [Produces("application/json")]
         [OpenApiOperation(
-            summary: "List available languages",
-            description: "This endpoint returns a list of available languages"
+            summary: "Create a new user",
+            description: "Create a new user"
         )]
-        [SwaggerResponse(HttpStatusCode.OK, typeof(UserResponse), Description = "Ok")]
-        [SwaggerResponse(HttpStatusCode.InternalServerError, typeof(ValidationProblemDetails), Description = "Error while processing the request")]
+        [SwaggerResponse(HttpStatusCode.OK, typeof(void), Description = "Ok")]
+        [SwaggerResponse(HttpStatusCode.BadRequest, typeof(Error), Description = "Bad request")]
+        [SwaggerResponse(HttpStatusCode.InternalServerError, typeof(Error), Description = "Error while processing the request")]
         public async Task<IActionResult> CreateUser([FromBody] CreateUser.Command request, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(request, cancellationToken);
+            var response = await _mediator.Send(request, cancellationToken);
 
-            return Ok(result);
+            if (!response.Success)
+            {
+                return StatusCode((int)response.StatusCode, response.Error);
+            }
+
+            return Ok();
         }
         
         [HttpPost("register")]
         [Produces("application/json")]
         [OpenApiOperation(
-            summary: "asgasdgeas",
-            description: "adgasdgasdg"
+            summary: "Register a user",
+            description: "Complete the registration of a user"
         )]
         [SwaggerResponse(HttpStatusCode.OK, typeof(string), Description = "Ok")]
-        [SwaggerResponse(HttpStatusCode.InternalServerError, typeof(ValidationProblemDetails), Description = "Error while processing the request")]
+        [SwaggerResponse(HttpStatusCode.BadRequest, typeof(Error), Description = "Bad request")]
+        [SwaggerResponse(HttpStatusCode.InternalServerError, typeof(Error), Description = "Error while processing the request")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUser.Command request, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(request, cancellationToken);
+            var response = await _mediator.Send(request, cancellationToken);
 
-            return Ok("Todo bien");
+            if (!response.Success)
+            {
+                return StatusCode((int)response.StatusCode, response.Error);
+            }
+
+            return Ok();
         }
     }
 }

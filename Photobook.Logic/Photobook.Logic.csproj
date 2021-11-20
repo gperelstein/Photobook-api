@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Photobook.Common\Photobook.Common.csproj" />
     <ProjectReference Include="..\Photobook.Data\Photobook.Data.csproj" />
-    <ProjectReference Include="..\Photobook.Models\Photobook.Common.csproj" />
     <ProjectReference Include="..\Photobook.Notifications\Photobook.Notifications.csproj" />
   </ItemGroup>
 

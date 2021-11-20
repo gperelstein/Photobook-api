@@ -8,20 +8,23 @@ using Photobook.Notifications.Models;
 using Photobook.Notifications.Templates;
 using System.Threading;
 using System.Threading.Tasks;
+using Photobook.Common.HandlersResponses;
+using System.Net;
+using System;
 
 namespace Photobook.Logic.Features.Users
 {
     public class CreateUser
     {
-        [JsonSchema("ListCompanyUsersCommand")]
-        public class Command : IRequest<UserResponse>
+        [JsonSchema("CreateUserCommand")]
+        public class Command : IRequest<Response<UserResponse>>
         {
             public string FirstName { get; set; }
             public string LastName { get; set; }
             public string Email { get; set; }
         }
 
-        public class Handler : IRequestHandler<Command, UserResponse>
+        public class Handler : IRequestHandler<Command, Response<UserResponse>>
         {
             private readonly UserManager<PhotobookUser> _userManager;
             private readonly INotificationController _notificationController;
@@ -32,32 +35,44 @@ namespace Photobook.Logic.Features.Users
                 _notificationController = notificationController;
             }
 
-            public async Task<UserResponse> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Response<UserResponse>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var newUser = new PhotobookUser
+                try
                 {
-                    Email = request.Email,
-                    UserName = request.Email,
-                    IsActive = false
-                };
+                    var newUser = new PhotobookUser
+                    {
+                        Email = request.Email,
+                        UserName = request.Email,
+                        IsActive = false
+                    };
 
-                var result = await _userManager.CreateAsync(newUser);
+                    var result = await _userManager.CreateAsync(newUser);
 
-                if (!result.Succeeded)
-                {
-                    return new UserResponse();
+                    if (!result.Succeeded)
+                    {
+                        return new Response<UserResponse>(
+                            new Error(ErrorCodes.EmailAlreadyExists,
+                            ErrorMessages.EmailAlreadyExists,
+                            HttpStatusCode.BadRequest));
+                    }
+
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+
+                    var notification = CreateNotification(token, request.Email, request.FirstName);
+
+                    await _notificationController.PushAsync(notification);
+
+                    var user = new UserResponse { Email = newUser.Email };
+
+                    return new Response<UserResponse>(user);
                 }
-
-                var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
-
-                var notification = CreateNotification(token, request.Email, request.FirstName);
-
-                await _notificationController.PushAsync(notification);
-
-                return new UserResponse
+                catch(Exception ex)
                 {
-                    Email = newUser.Email
-                };
+                    return new Response<UserResponse>(
+                            new Error(ErrorCodes.UnexpectedError,
+                            ex.Message,
+                            HttpStatusCode.BadRequest));
+                }
             }
 
             private EmailNotification CreateNotification(string token, string email, string firstName) => new UserRegistration

@@ -7,20 +7,22 @@ using Photobook.Common.Identity;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Photobook.Common.HandlersResponses;
+using System.Net;
 
 namespace Photobook.Logic.Features.Users
 {
     public class RegisterUser
     {
-        [JsonSchema("Command")]
-        public class Command : IRequest
+        [JsonSchema("RegisterUserCommand")]
+        public class Command : IRequest<Response<Unit>>
         {
             public string Email { get; set; }
             public string Password { get; set; }
             public string Token { get; set; }
         }
 
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command, Response<Unit>>
         {
             private readonly UserManager<PhotobookUser> _userManager;
             private readonly PhotobookDbContext _context;
@@ -30,25 +32,41 @@ namespace Photobook.Logic.Features.Users
                 _userManager = userManager;
                 _context = context;
             }
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Response<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
-
-                if(user == null)
+                try
                 {
-                    return Unit.Value;
+                    var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
+
+                    if (user == null)
+                    {
+                        return new Response<Unit>(
+                            new Error(ErrorCodes.InvalidUser,
+                            ErrorMessages.InvalidUser,
+                            HttpStatusCode.BadRequest));
+                    }
+
+                    var result = await _userManager.ConfirmEmailAsync(user, request.Token);
+
+                    if (!result.Succeeded)
+                    {
+                        return new Response<Unit>(
+                            new Error(ErrorCodes.InvalidToken,
+                            ErrorMessages.InvalidToken,
+                            HttpStatusCode.BadRequest));
+                    }
+
+                    await _userManager.AddPasswordAsync(user, request.Password);
+
+                    return new Response<Unit>(Unit.Value);
                 }
-
-                var result = await _userManager.ConfirmEmailAsync(user, request.Token);
-
-                if(!result.Succeeded)
+                catch(Exception ex)
                 {
-                    return Unit.Value;
+                    return new Response<Unit>(
+                            new Error(ErrorCodes.UnexpectedError,
+                            ex.Message,
+                            HttpStatusCode.BadRequest));
                 }
-
-                await _userManager.AddPasswordAsync(user, request.Password);
-
-                return Unit.Value;
             }
         }
     }

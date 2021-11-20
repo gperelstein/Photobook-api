@@ -14,11 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Photobook.Models\Photobook.Common.csproj" />
+    <Folder Include="Configurations\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Configurations\" />
+    <ProjectReference Include="..\Photobook.Common\Photobook.Common.csproj" />
   </ItemGroup>
 
 </Project>
