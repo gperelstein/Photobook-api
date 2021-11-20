@@ -1,9 +1,10 @@
 ﻿using Photobook.Common.Identity;
+using Photobook.Common.Models.Base;
 using System;
 
 namespace Photobook.Common.Models
 {
-    public class UserProfile
+    public class Profile : BaseEntity
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
