@@ -7,7 +7,7 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["Photobook.MigrationUtility/Photobook.MigrationUtility.csproj", "Photobook.MigrationUtility/"]
 COPY ["Photobook.Data/Photobook.Data.csproj", "Photobook.Data/"]
-COPY ["Photobook.Models/Photobook.Common.csproj", "Photobook.Common/"]
+COPY ["Photobook.Common/Photobook.Common.csproj", "Photobook.Common/"]
 RUN dotnet restore "Photobook.MigrationUtility/Photobook.MigrationUtility.csproj"
 COPY . .
 WORKDIR "/src/Photobook.MigrationUtility"
