@@ -6,5 +6,6 @@ namespace Photobook.Notifications.Templates
     {
         public override string TemplateName => "UserRegistration.html";
         public string RegistrationLink { get; set; }
+        public string FirstName { get; set; }
     }
 }

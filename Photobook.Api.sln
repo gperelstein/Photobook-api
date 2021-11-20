@@ -7,13 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photobook.Api", "Photobook.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photobook.Logic", "Photobook.Logic\Photobook.Logic.csproj", "{0D615F64-42CC-47B5-98B2-0CB43011ACC0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photobook.Models", "Photobook.Models\Photobook.Models.csproj", "{63860518-F961-4602-B215-BDC70E49F8D9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photobook.Data", "Photobook.Data\Photobook.Data.csproj", "{0EDBF015-22BE-46AC-B310-324F7CFDEF6A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photobook.Notifications", "Photobook.Notifications\Photobook.Notifications.csproj", "{65C6E750-360E-41C7-811E-FCCB5123ECFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Photobook.MigrationUtility", "Photobook.MigrationUtility\Photobook.MigrationUtility.csproj", "{8D163E5D-A373-43DD-A2A2-FC3DEEDDC9B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photobook.MigrationUtility", "Photobook.MigrationUtility\Photobook.MigrationUtility.csproj", "{8D163E5D-A373-43DD-A2A2-FC3DEEDDC9B5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photobook.Common", "Photobook.Common\Photobook.Common.csproj", "{D69A5E2C-FAD2-4C2D-87E5-93C0BF37DAB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,6 @@ Global
 		{0D615F64-42CC-47B5-98B2-0CB43011ACC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D615F64-42CC-47B5-98B2-0CB43011ACC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D615F64-42CC-47B5-98B2-0CB43011ACC0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{63860518-F961-4602-B215-BDC70E49F8D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{63860518-F961-4602-B215-BDC70E49F8D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{63860518-F961-4602-B215-BDC70E49F8D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{63860518-F961-4602-B215-BDC70E49F8D9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0EDBF015-22BE-46AC-B310-324F7CFDEF6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0EDBF015-22BE-46AC-B310-324F7CFDEF6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EDBF015-22BE-46AC-B310-324F7CFDEF6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +41,10 @@ Global
 		{8D163E5D-A373-43DD-A2A2-FC3DEEDDC9B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D163E5D-A373-43DD-A2A2-FC3DEEDDC9B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D163E5D-A373-43DD-A2A2-FC3DEEDDC9B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D69A5E2C-FAD2-4C2D-87E5-93C0BF37DAB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D69A5E2C-FAD2-4C2D-87E5-93C0BF37DAB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D69A5E2C-FAD2-4C2D-87E5-93C0BF37DAB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D69A5E2C-FAD2-4C2D-87E5-93C0BF37DAB9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

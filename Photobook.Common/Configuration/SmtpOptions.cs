@@ -1,4 +1,4 @@
-﻿namespace Photobook.Models.Configuration
+﻿namespace Photobook.Common.Configuration
 {
     public class SmtpOptions
     {

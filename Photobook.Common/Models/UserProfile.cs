@@ -1,7 +1,7 @@
-﻿using Photobook.Models.Identity;
+﻿using Photobook.Common.Identity;
 using System;
 
-namespace Photobook.Models.Models
+namespace Photobook.Common.Models
 {
     public class UserProfile
     {

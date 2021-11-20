@@ -5,7 +5,7 @@ using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Photobook.Models.Identity;
+using Photobook.Common.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;

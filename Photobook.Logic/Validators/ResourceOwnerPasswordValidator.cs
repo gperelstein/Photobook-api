@@ -3,7 +3,7 @@ using IdentityServer4.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Identity;
-using Photobook.Models.Identity;
+using Photobook.Common.Identity;
 using System.Threading.Tasks;
 using static IdentityModel.OidcConstants;
 

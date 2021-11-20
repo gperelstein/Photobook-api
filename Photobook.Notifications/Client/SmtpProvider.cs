@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
-using Photobook.Models.Configuration;
+using Photobook.Common.Configuration;
 using Photobook.Notifications.Models;
 using System;
 using System.Net;

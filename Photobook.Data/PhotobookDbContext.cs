@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Photobook.Data.IdentityCustomDbContext;
-using Photobook.Models.Identity;
+using Photobook.Common.Identity;
 using System;
 
 namespace Photobook.Data

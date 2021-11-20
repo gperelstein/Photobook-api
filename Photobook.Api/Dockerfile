@@ -9,7 +9,7 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["Photobook.Api/Photobook.Api.csproj", "Photobook.Api/"]
 COPY ["Photobook.Logic/Photobook.Logic.csproj", "Photobook.Logic/"]
-COPY ["Photobook.Models/Photobook.Models.csproj", "Photobook.Models/"]
+COPY ["Photobook.Models/Photobook.Common.csproj", "Photobook.Common/"]
 COPY ["Photobook.Data/Photobook.Data.csproj", "Photobook.Data/"]
 COPY ["Photobook.Notifications/Photobook.Notifications.csproj", "Photobook.Notifications/"]
 RUN dotnet restore "Photobook.Api/Photobook.Api.csproj"

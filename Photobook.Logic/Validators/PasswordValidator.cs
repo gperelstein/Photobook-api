@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Photobook.Models.Identity;
+using Photobook.Common.Identity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

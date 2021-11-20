@@ -9,7 +9,7 @@ using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
 using Photobook.Data;
 using Photobook.Logic;
-using Photobook.Models.Configuration;
+using Photobook.Common.Configuration;
 using Photobook.Notifications;
 using System;
 using System.Collections.Generic;

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 
-namespace Photobook.Models.Identity
+namespace Photobook.Common.Identity
 {
     public class PhotobookUser : IdentityUser<Guid>
     {

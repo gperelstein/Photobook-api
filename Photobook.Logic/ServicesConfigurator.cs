@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Photobook.Data;
 using Photobook.Logic.Identity;
 using Photobook.Logic.Validators;
-using Photobook.Models.Identity;
+using Photobook.Common.Identity;
 using System.Reflection;
 
 namespace Photobook.Logic

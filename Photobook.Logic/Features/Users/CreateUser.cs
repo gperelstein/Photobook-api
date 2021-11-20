@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using NJsonSchema.Annotations;
 using Photobook.Logic.Features.Users.Responses;
-using Photobook.Models.Identity;
+using Photobook.Common.Identity;
 using Photobook.Notifications;
 using Photobook.Notifications.Models;
 using Photobook.Notifications.Templates;
@@ -50,7 +50,7 @@ namespace Photobook.Logic.Features.Users
 
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
 
-                var notification = CreateNotification(token, request.Email);
+                var notification = CreateNotification(token, request.Email, request.FirstName);
 
                 await _notificationController.PushAsync(notification);
 
@@ -60,10 +60,11 @@ namespace Photobook.Logic.Features.Users
                 };
             }
 
-            private EmailNotification CreateNotification(string token, string email) => new UserRegistration
+            private EmailNotification CreateNotification(string token, string email, string firstName) => new UserRegistration
             {
                 RegistrationLink = token,
-                To = email
+                To = email,
+                FirstName = firstName
             };
         }
     }

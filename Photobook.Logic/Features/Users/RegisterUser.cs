@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NJsonSchema.Annotations;
 using Photobook.Data;
-using Photobook.Models.Identity;
+using Photobook.Common.Identity;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
