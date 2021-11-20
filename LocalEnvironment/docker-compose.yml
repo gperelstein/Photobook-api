@@ -1,0 +1,78 @@
+version: '3.6'
+
+services:
+
+  photobook-sqlserver:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    env_file: 
+      - 'shared_variables.env'
+    ports:
+      - 50005:1433
+    networks:
+      - photobook_network_local      
+      
+  photobook-cloudbeaver:
+    image: dbeaver/cloudbeaver:latest
+    env_file: 
+      - 'shared_variables.env'
+    ports:
+      - 50010:8978 
+    volumes:
+      - ./data-sources.json:/opt/cloudbeaver/workspace/GlobalConfiguration/.dbeaver/data-sources3.json
+    networks:
+      - photobook_network_local
+      
+  photobook-migrations:
+    build:
+      context: ../.
+      dockerfile: Photobook.MigrationUtility/Dockerfile
+    user: root
+    depends_on:
+      - photobook-sqlserver
+    env_file:
+      - 'shared_variables.env'
+    entrypoint: /bin/sh
+    command: >
+        -c '/bin/sleep 90
+        && wget "https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/msodbcsql17_17.7.2.1-1_amd64.apk"
+        && wget "https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/mssql-tools_17.7.1.1-1_amd64.apk"
+        && apk add --allow-untrusted msodbcsql17_17.7.2.1-1_amd64.apk
+        && apk add --allow-untrusted mssql-tools_17.7.1.1-1_amd64.apk
+        && /opt/mssql-tools/bin/sqlcmd -S photobook-sqlserver,1433 -U sa -P Pass1234 -d tempdb -q "CREATE DATABASE [Photobook]"
+        && dotnet Photobook.MigrationUtility.dll'
+    networks:
+      - photobook_network_local
+
+  photobook-api:
+    build:
+      context: ../.
+      dockerfile: Photobook.Api/Dockerfile
+    depends_on:
+      - photobook-sqlserver
+      - photobook-migrations
+    env_file: 
+      - 'shared_variables.env'
+    ports:
+      - 50000:80
+    networks:
+      - photobook_network_local
+      
+  photobook-smtp:
+    image: rnwood/smtp4dev:v3
+    env_file: 
+      - 'shared_variables.env'
+    ports:
+      - 50020:80
+      - 25:25
+      - 143:143
+    volumes:
+      - smtp4dev-data:/smtp4dev
+    networks:
+      - photobook_network_local
+
+networks:
+  photobook_network_local:
+    name: photobook_network_local
+    
+volumes:
+  smtp4dev-data:

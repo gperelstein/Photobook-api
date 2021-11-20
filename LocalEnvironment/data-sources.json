@@ -1,0 +1,20 @@
+{
+	"connections": {
+		"microsoft-17ba7a2be82-7ef1211c6cefe70a": {
+			"provider": "sqlserver",
+			"driver": "microsoft",
+			"name": "SQL Server@pk-sqlserver",
+			"save-password": true,
+			"show-system-objects": true,
+			"read-only": false,
+			"configuration": {
+				"host": "pk-sqlserver",
+				"port": "1433",
+				"database": "master",
+				"url": "jdbc:sqlserver://;serverName=pk-sqlserver;databaseName=master",
+				"type": "dev",
+				"auth-model": "native"
+			}
+		}
+	}
+}

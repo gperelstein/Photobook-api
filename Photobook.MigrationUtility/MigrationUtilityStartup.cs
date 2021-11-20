@@ -1,5 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Photobook.Data;
+using System;
 
 namespace Photobook.MigrationUtility
 {
@@ -14,10 +18,7 @@ namespace Photobook.MigrationUtility
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DatabaseContext>(options =>
-            {
-                options.UseMySql(Configuration.GetConnectionString("LearningAnalyticsAPIContext"));
-            });
+            services.AddData(Configuration);
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
