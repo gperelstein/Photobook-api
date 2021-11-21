@@ -15,6 +15,7 @@ using Photobook.Common.Services.Files;
 using System.IO.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Photobook.Common.Configuration;
+using FluentValidation;
 
 namespace Photobook.Logic
 {
@@ -23,6 +24,7 @@ namespace Photobook.Logic
         public static IServiceCollection AddLogic(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
             services.AddDefaultIdentity<PhotobookUser>()
                     .AddRoles<PhotobookRole>()

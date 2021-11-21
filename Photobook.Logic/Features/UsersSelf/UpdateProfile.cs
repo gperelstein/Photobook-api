@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using NJsonSchema.Annotations;
@@ -7,6 +8,8 @@ using Photobook.Common.Services;
 using Photobook.Common.Services.Files;
 using Photobook.Data;
 using Photobook.Logic.Features.UsersSelf.Responses;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +23,23 @@ namespace Photobook.Logic.Features.UsersSelf
         {
             public string Description { get; set; }
             public IFormFile File { get; set; }
+        }
+
+        public class Validator : AbstractValidator<Command>
+        {
+            private readonly string[] _validExtensions = new string[] { ".jpg", ".png" };
+            public Validator()
+            {
+                RuleFor(x => x.File)
+                    .Must(HasValidExtension)
+                    .WithMessage("File type not supported");
+            }
+
+            protected bool HasValidExtension(IFormFile file)
+            {
+                var extension = Path.GetExtension(file.FileName);
+                return _validExtensions.Contains(extension);
+            }
         }
 
         public class Handler : IRequestHandler<Command, Response<ProfileResponse>>

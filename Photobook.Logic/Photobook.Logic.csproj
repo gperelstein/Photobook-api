@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="10.3.4" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="5.0.11" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="5.0.11" />
@@ -15,6 +16,10 @@
     <ProjectReference Include="..\Photobook.Common\Photobook.Common.csproj" />
     <ProjectReference Include="..\Photobook.Data\Photobook.Data.csproj" />
     <ProjectReference Include="..\Photobook.Notifications\Photobook.Notifications.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\UsersSelf\Validators\" />
   </ItemGroup>
 
 </Project>

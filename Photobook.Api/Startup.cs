@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -78,7 +79,7 @@ namespace Photobook.Api
                 });
                 options.OperationProcessors.Add(new OperationSecurityScopeProcessor("oauth2"));
             });
-            services.AddControllersWithViews();
+            services.AddControllers().AddFluentValidation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
