@@ -37,7 +37,7 @@ namespace Photobook.Data
                     x =>
                     {
                         x.HasKey("Id");
-                        x.Property("Id").ValueGeneratedNever();
+                        x.Property("Id").HasDefaultValueSql("NEWID()");
                     });
             }
         }

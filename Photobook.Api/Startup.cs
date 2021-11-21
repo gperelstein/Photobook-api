@@ -1,18 +1,22 @@
+using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
+using Microsoft.IdentityModel.Tokens;
 using NSwag;
 using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
+using Photobook.Common.Configuration;
 using Photobook.Data;
 using Photobook.Logic;
-using Photobook.Common.Configuration;
 using Photobook.Notifications;
-using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Photobook.Api
 {
@@ -30,10 +34,23 @@ namespace Photobook.Api
         {
             services.Configure<AppOptions>(Configuration.GetSection(AppOptions.AppConfiguration));
             services.AddData(Configuration);
-            services.AddLogic();
+            services.AddLogic(Configuration);
             services.AddNotifications();
             services.AddHttpContextAccessor();
             services.AddControllers();
+
+            services.AddAuthorization();
+
+            var urlsOptions = Configuration
+                .GetSection("AppConfiguration:Urls")
+                .Get<UrlsOptions>();
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(x =>
+                {
+                    x.Authority = urlsOptions.IdentityServerUrl; //idp address
+                    x.RequireHttpsMetadata = false;
+                    x.ApiName = "photobookweb";
+                });
 
             services.AddCors(opt =>
             {
@@ -84,12 +101,18 @@ namespace Photobook.Api
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Images")),
+                RequestPath = "/Images"
+            });
+
             app.UseRouting();
 
-            app.UseIdentityServer();
-
+            app.UseAuthentication();
             app.UseAuthorization();
+            app.UseIdentityServer();
 
             app.UseCors("CorsPolicy");
 

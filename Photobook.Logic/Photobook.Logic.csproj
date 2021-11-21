@@ -17,8 +17,4 @@
     <ProjectReference Include="..\Photobook.Notifications\Photobook.Notifications.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\UsersSelf\" />
-  </ItemGroup>
-
 </Project>

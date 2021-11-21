@@ -9,12 +9,18 @@ using Photobook.Logic.Identity;
 using Photobook.Logic.Validators;
 using Photobook.Common.Identity;
 using System.Reflection;
+using System.IO;
+using Photobook.Common.Services;
+using Photobook.Common.Services.Files;
+using System.IO.Abstractions;
+using Microsoft.Extensions.Configuration;
+using Photobook.Common.Configuration;
 
 namespace Photobook.Logic
 {
     public static class ServicesConfigurator
     {
-        public static IServiceCollection AddLogic(this IServiceCollection services)
+        public static IServiceCollection AddLogic(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
 
@@ -24,14 +30,12 @@ namespace Photobook.Logic
                     .AddDefaultTokenProviders()
                     .AddPasswordValidator<PasswordValidator>();
 
+            var urlsOptions = configuration
+                .GetSection("AppConfiguration:Urls")
+                .Get<UrlsOptions>();
             services.AddIdentityServer(options =>
             {
-                options.UserInteraction = new UserInteractionOptions()
-                {
-                    LogoutUrl = "http://localhost:3000/login",
-                    LoginUrl = "http://localhost:3000/success",
-                    ErrorUrl = "http://localhost:3000/error"
-                };
+                options.IssuerUri = urlsOptions.IdentityServerUrl;
             })
             .AddInMemoryClients(Config.GetClients())
             .AddInMemoryIdentityResources(Config.GetIdentityResources())
@@ -48,6 +52,10 @@ namespace Photobook.Logic
             {
                 options.AddPolicy("CanPurge", policy => policy.RequireRole("Administrator"));
             });
+
+            services.AddTransient<ICurrentUserService, CurrentUserService>();
+            services.AddTransient<IFilesService, ProfilePicturesService>();
+            services.AddTransient<IFileSystem, FileSystem>();
 
             return services;
         }

@@ -46,6 +46,7 @@ namespace Photobook.Logic.Features.Users
                             HttpStatusCode.BadRequest));
                     }
 
+                    user.IsActive = true;
                     var result = await _userManager.ConfirmEmailAsync(user, request.Token);
 
                     if (!result.Succeeded)
