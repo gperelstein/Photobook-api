@@ -20,7 +20,7 @@ namespace Photobook.Logic.Identity
 
         public static IEnumerable<ApiResource> GetApis()
         {
-            return new[]
+            return new List<ApiResource>
             {
                 new ApiResource
                 {

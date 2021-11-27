@@ -15,6 +15,7 @@ using Photobook.Common.Configuration;
 using Microsoft.Extensions.Options;
 using Photobook.Data;
 using Photobook.Common.Models;
+using FluentValidation;
 
 namespace Photobook.Logic.Features.Users
 {
@@ -26,6 +27,17 @@ namespace Photobook.Logic.Features.Users
             public string FirstName { get; set; }
             public string LastName { get; set; }
             public string Email { get; set; }
+        }
+
+        public class Validator : AbstractValidator<Command>
+        {
+            public Validator()
+            {
+                RuleFor(x => x.Email)
+                    .Cascade(CascadeMode.Stop)
+                    .NotEmpty()
+                    .EmailAddress();
+            }
         }
 
         public class Handler : IRequestHandler<Command, Response<UserResponse>>

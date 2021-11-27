@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Photobook.Common.HandlersResponses;
 using System.Net;
+using FluentValidation;
 
 namespace Photobook.Logic.Features.Users
 {
@@ -20,6 +21,25 @@ namespace Photobook.Logic.Features.Users
             public string Email { get; set; }
             public string Password { get; set; }
             public string Token { get; set; }
+        }
+
+        public class Validator : AbstractValidator<Command>
+        {
+            public Validator()
+            {
+                RuleFor(x => x.Email)
+                    .Cascade(CascadeMode.Stop)
+                    .NotEmpty()
+                    .EmailAddress();
+
+                RuleFor(x => x.Password)
+                    .Cascade(CascadeMode.Stop)
+                    .NotEmpty()
+                    .Matches(@"\d")
+                    .Matches(@"[a-z]")
+                    .Matches(@"[A-Z]")
+                    .Matches(@"[\^$*.[\]{}(\)?""!@#%&/\\,><':;|_~`]");
+            }
         }
 
         public class Handler : IRequestHandler<Command, Response<Unit>>
