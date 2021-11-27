@@ -71,8 +71,11 @@ namespace Photobook.Logic.Features.UsersSelf
                             HttpStatusCode.BadRequest));
                 }
 
-                var imagePath = await _profilePicturesService.SaveFile(request.File, userId.ToString());
-
+                string imagePath = null;
+                if (request.File != null)
+                {
+                    imagePath = await _profilePicturesService.SaveFile(request.File, userId.ToString());
+                }
                 profile.Description = request.Description;
                 profile.ProfilePicture = imagePath;
 

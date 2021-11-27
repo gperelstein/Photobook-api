@@ -33,6 +33,14 @@ namespace Photobook.Logic.Features.Users
         {
             public Validator()
             {
+                RuleFor(x => x.FirstName)
+                    .Cascade(CascadeMode.Stop)
+                    .NotEmpty();
+
+                RuleFor(x => x.LastName)
+                    .Cascade(CascadeMode.Stop)
+                    .NotEmpty();
+
                 RuleFor(x => x.Email)
                     .Cascade(CascadeMode.Stop)
                     .NotEmpty()

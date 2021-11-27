@@ -39,6 +39,10 @@ namespace Photobook.Logic.Features.Users
                     .Matches(@"[a-z]")
                     .Matches(@"[A-Z]")
                     .Matches(@"[\^$*.[\]{}(\)?""!@#%&/\\,><':;|_~`]");
+
+                RuleFor(x => x.Token)
+                    .Cascade(CascadeMode.Stop)
+                    .NotEmpty();
             }
         }
 
