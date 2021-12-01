@@ -2,6 +2,8 @@ using FluentValidation.AspNetCore;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -75,6 +77,10 @@ namespace Photobook.Api
                     In = OpenApiSecurityApiKeyLocation.Header
                 });
                 options.OperationProcessors.Add(new OperationSecurityScopeProcessor("oauth2"));
+            });
+            services.Configure<RouteOptions>(options =>
+            {
+                options.LowercaseUrls = true;
             });
             services.AddControllers().AddFluentValidation();
         }

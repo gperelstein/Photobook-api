@@ -23,6 +23,27 @@ namespace Photobook.Api.Controllers
             _mediator = mediator;
         }
 
+        [HttpGet("profile")]
+        [Produces("application/json")]
+        [OpenApiOperation(
+            summary: "Retrive the user profile",
+            description: "Retrive the user profile"
+        )]
+        [SwaggerResponse(HttpStatusCode.OK, typeof(ProfileResponse), Description = "Ok")]
+        [SwaggerResponse(HttpStatusCode.BadRequest, typeof(Error), Description = "Error while processing the request")]
+        [SwaggerResponse(HttpStatusCode.InternalServerError, typeof(Error), Description = "Error while processing the request")]
+        public async Task<IActionResult> GetProfile(CancellationToken cancellationToken)
+        {
+            var response = await _mediator.Send(new GetProfile.Command(), cancellationToken);
+
+            if (!response.Success)
+            {
+                return StatusCode((int)response.StatusCode, response.Error);
+            }
+
+            return Ok(response.Value);
+        }
+
         [HttpPut("profile")]
         [Produces("application/json")]
         [OpenApiOperation(
@@ -32,7 +53,28 @@ namespace Photobook.Api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, typeof(ProfileResponse), Description = "Ok")]
         [SwaggerResponse(HttpStatusCode.BadRequest, typeof(Error), Description = "Error while processing the request")]
         [SwaggerResponse(HttpStatusCode.InternalServerError, typeof(Error), Description = "Error while processing the request")]
-        public async Task<IActionResult> UpdateUser([FromForm] UpdateProfile.Command request, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfile.Command request, CancellationToken cancellationToken)
+        {
+            var response = await _mediator.Send(request, cancellationToken);
+
+            if (!response.Success)
+            {
+                return StatusCode((int)response.StatusCode, response.Error);
+            }
+
+            return Ok(response.Value);
+        }
+
+        [HttpPut("profile-picture")]
+        [Produces("application/json")]
+        [OpenApiOperation(
+            summary: "Update the user profile picture",
+            description: "Update the user profile picture"
+        )]
+        [SwaggerResponse(HttpStatusCode.OK, typeof(ProfileResponse), Description = "Ok")]
+        [SwaggerResponse(HttpStatusCode.BadRequest, typeof(Error), Description = "Error while processing the request")]
+        [SwaggerResponse(HttpStatusCode.InternalServerError, typeof(Error), Description = "Error while processing the request")]
+        public async Task<IActionResult> UpdateProfilePicture([FromForm] UpdateProfilePicture.Command request, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(request, cancellationToken);
 

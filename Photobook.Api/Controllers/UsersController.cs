@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Photobook.Api.Controllers
 {
     [ApiController]
-    [Route("[Controller]")]
+    [Route("[controller]")]
     public class UsersController : ControllerBase
     {
         private readonly IMediator _mediator;
