@@ -31,7 +31,9 @@ namespace Photobook.Logic
                     .AddEntityFrameworkStores<PhotobookDbContext>()
                     .AddDefaultTokenProviders()
                     .AddPasswordValidator<PasswordValidator>();
-
+            var identityOptions = configuration
+                .GetSection("AppConfiguration:Identity")
+                .Get<Common.Configuration.IdentityOptions>();
             var urlsOptions = configuration
                 .GetSection("AppConfiguration:Urls")
                 .Get<UrlsOptions>();
@@ -39,9 +41,9 @@ namespace Photobook.Logic
             {
                 options.IssuerUri = urlsOptions.IdentityServerUrl;
             })
-            .AddInMemoryClients(Config.GetClients())
+            .AddInMemoryClients(Config.GetClients(identityOptions))
             .AddInMemoryIdentityResources(Config.GetIdentityResources())
-            .AddInMemoryApiResources(Config.GetApis())
+            .AddInMemoryApiResources(Config.GetApis(identityOptions))
             .AddInMemoryApiScopes(Config.GetScopes())
             .AddProfileService<ProfileService<PhotobookUser>>()
             .AddResourceOwnerValidator<ResourceOwnerPasswordValidator>()

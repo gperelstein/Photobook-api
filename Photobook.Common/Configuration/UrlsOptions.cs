@@ -6,6 +6,7 @@ namespace Photobook.Common.Configuration
     {
         public string WebUrl { get; set; }
         public string IdentityServerUrl { get; set; }
+        public string TokenUrl { get; set; }
 
         public string GenerateLink(string path)
         {

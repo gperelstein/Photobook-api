@@ -18,7 +18,7 @@ services:
     ports:
       - 50010:8978 
     volumes:
-      - ./data-sources.json:/opt/cloudbeaver/workspace/GlobalConfiguration/.dbeaver/data-sources3.json
+      - ./data-sources.json:/opt/cloudbeaver/workspace/GlobalConfiguration/.dbeaver/data-sources2.json
     networks:
       - photobook_network_local
       

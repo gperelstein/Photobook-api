@@ -44,13 +44,17 @@ namespace Photobook.Api
             var urlsOptions = Configuration
                 .GetSection("AppConfiguration:Urls")
                 .Get<UrlsOptions>();
+            var identityOptions = Configuration
+                .GetSection("AppConfiguration:Identity")
+                .Get<IdentityOptions>();
+
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(x =>
                 {
                     x.Authority = urlsOptions.IdentityServerUrl; //idp address
                     x.RequireHttpsMetadata = false;
-                    x.ApiName = "photobookweb";
-                    x.ApiSecret = "secret";
+                    x.ApiName = identityOptions.ClientName;
+                    x.ApiSecret = identityOptions.ClientSecret;
                 });
 
             services.AddCors(opt =>
@@ -61,7 +65,7 @@ namespace Photobook.Api
             services.AddOpenApiDocument(options =>
             {
                 options.DocumentName = "v1";
-                options.Title = "Protected API";
+                options.Title = "Photobook Api";
                 options.Version = "v1";
                 options.AddSecurity("oauth2", new NSwag.OpenApiSecurityScheme
                 {
@@ -70,8 +74,11 @@ namespace Photobook.Api
                     {
                         Password = new NSwag.OpenApiOAuthFlow
                         {
-                            TokenUrl = "https://localhost:5001/connect/token",
-                            Scopes = new Dictionary<string, string> { { "write", "Demo API - full access" } }
+                            TokenUrl = $"{urlsOptions.TokenUrl}/connect/token",
+                            Scopes = new Dictionary<string, string>
+                            {
+                                { "regular", "Regular user scope" }
+                            }
                         }
                     },
                     In = OpenApiSecurityApiKeyLocation.Header
@@ -88,6 +95,10 @@ namespace Photobook.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var identityOptions = Configuration
+                .GetSection("AppConfiguration:Identity")
+                .Get<IdentityOptions>();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -96,9 +107,9 @@ namespace Photobook.Api
                 {
                     settings.OAuth2Client = new OAuth2ClientSettings
                     {
-                        AppName = "photobookweb",
-                        ClientId = "service.client",
-                        ClientSecret = "secret",
+                        AppName = identityOptions.ClientName,
+                        ClientId = identityOptions.ClientId,
+                        ClientSecret = identityOptions.ClientSecret,
                         UsePkceWithAuthorizationCodeGrant = true
                     };
                 });

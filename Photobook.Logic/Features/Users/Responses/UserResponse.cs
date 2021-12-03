@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Photobook.Logic.Features.Users.Responses
+﻿namespace Photobook.Logic.Features.Users.Responses
 {
     public class UserResponse
     {

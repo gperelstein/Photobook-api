@@ -1,5 +1,6 @@
 ﻿using IdentityModel;
 using IdentityServer4.Models;
+using Photobook.Common.Configuration;
 using System.Collections.Generic;
 
 namespace Photobook.Logic.Identity
@@ -18,33 +19,33 @@ namespace Photobook.Logic.Identity
             };
         }
 
-        public static IEnumerable<ApiResource> GetApis()
+        public static IEnumerable<ApiResource> GetApis(IdentityOptions identityOptions)
         {
             return new List<ApiResource>
             {
                 new ApiResource
                 {
-                    Name = "photobookweb",
+                    Name = identityOptions.ClientName,
                     ApiSecrets =
                     {
-                        new Secret("secret".Sha256())
+                        new Secret(identityOptions.ClientSecret.Sha256())
                     },
                     UserClaims = { JwtClaimTypes.Name, JwtClaimTypes.Email },
-                    Scopes = {"openid", "profile", "read", "write", "delete"}
+                    Scopes = {"openid", "profile", "read", "write", "delete", "regular"}
                 }
             };
         }
 
-        public static IEnumerable<Client> GetClients()
+        public static IEnumerable<Client> GetClients(IdentityOptions identityOptions)
         {
             return new List<Client>
             {
                 new Client
                 {
-                    ClientId = "service.client",
-                    ClientSecrets = { new Secret("secret".Sha256()) },
+                    ClientId = identityOptions.ClientId,
+                    ClientSecrets = { new Secret(identityOptions.ClientSecret.Sha256()) },
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-                    AllowedScopes = { "openid", "profile", "read", "write", "delete" },
+                    AllowedScopes = { "openid", "profile", "read", "write", "delete", "regular" },
                     AllowOfflineAccess = true,
                     IdentityTokenLifetime = 60 * 60 * 24,
                     AccessTokenLifetime = 60 * 60 * 24,
@@ -62,6 +63,7 @@ namespace Photobook.Logic.Identity
         {
             return new List<ApiScope>
             {
+                new ApiScope(name: "regular",   displayName: "Regular data access"),
                 new ApiScope(name: "read",   displayName: "Read your data."),
                 new ApiScope(name: "write",  displayName: "Write your data."),
                 new ApiScope(name: "delete", displayName: "Delete your data.")

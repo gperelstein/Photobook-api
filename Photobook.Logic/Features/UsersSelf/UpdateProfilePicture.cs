@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using NJsonSchema.Annotations;
 using Photobook.Common.HandlersResponses;
 using Photobook.Common.Services;
 using Photobook.Common.Services.Files;
@@ -17,6 +18,7 @@ namespace Photobook.Logic.Features.UsersSelf
 {
     public class UpdateProfilePicture
     {
+        [JsonSchema("UpdateProfilePictureCommand")]
         public class Command : IRequest<Response<ProfileResponse>>
         {
             public IFormFile ProfilePicture { get; set; }

@@ -1,9 +1,11 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using NJsonSchema.Annotations;
 using Photobook.Common.HandlersResponses;
 using Photobook.Common.Services;
 using Photobook.Data;
 using Photobook.Logic.Features.UsersSelf.Responses;
+using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,6 +14,7 @@ namespace Photobook.Logic.Features.UsersSelf
 {
     public class GetProfile
     {
+        [JsonSchema("GetProfileCommand")]
         public class Command : IRequest<Response<ProfileResponse>> { }
 
         public class Handler : IRequestHandler<Command, Response<ProfileResponse>>

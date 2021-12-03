@@ -26,7 +26,7 @@ namespace Photobook.Api.Controllers
             summary: "Create a new user",
             description: "Create a new user"
         )]
-        [SwaggerResponse(HttpStatusCode.OK, typeof(void), Description = "Ok")]
+        [SwaggerResponse(HttpStatusCode.NoContent, typeof(void), Description = "Ok")]
         [SwaggerResponse(HttpStatusCode.BadRequest, typeof(Error), Description = "Bad request")]
         [SwaggerResponse(HttpStatusCode.InternalServerError, typeof(Error), Description = "Error while processing the request")]
         public async Task<IActionResult> CreateUser([FromBody] CreateUser.Command request, CancellationToken cancellationToken)
@@ -38,7 +38,7 @@ namespace Photobook.Api.Controllers
                 return StatusCode((int)response.StatusCode, response.Error);
             }
 
-            return Ok();
+            return NoContent();
         }
         
         [HttpPost("register")]
@@ -47,7 +47,7 @@ namespace Photobook.Api.Controllers
             summary: "Register a user",
             description: "Complete the registration of a user"
         )]
-        [SwaggerResponse(HttpStatusCode.OK, typeof(string), Description = "Ok")]
+        [SwaggerResponse(HttpStatusCode.NoContent, typeof(string), Description = "Ok")]
         [SwaggerResponse(HttpStatusCode.BadRequest, typeof(Error), Description = "Bad request")]
         [SwaggerResponse(HttpStatusCode.InternalServerError, typeof(Error), Description = "Error while processing the request")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUser.Command request, CancellationToken cancellationToken)
@@ -59,7 +59,7 @@ namespace Photobook.Api.Controllers
                 return StatusCode((int)response.StatusCode, response.Error);
             }
 
-            return Ok();
+            return NoContent();
         }
     }
 }
