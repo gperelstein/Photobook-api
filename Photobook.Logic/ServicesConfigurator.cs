@@ -1,21 +1,19 @@
-﻿using IdentityServer4.AspNetIdentity;
-using IdentityServer4.Configuration;
+﻿using FluentValidation;
+using IdentityServer4.AspNetIdentity;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Photobook.Common.Configuration;
+using Photobook.Common.Identity;
+using Photobook.Common.Services.CurrentUser;
+using Photobook.Common.Services.Files;
 using Photobook.Data;
 using Photobook.Logic.Identity;
 using Photobook.Logic.Validators;
-using Photobook.Common.Identity;
-using System.Reflection;
-using System.IO;
-using Photobook.Common.Services;
-using Photobook.Common.Services.Files;
 using System.IO.Abstractions;
-using Microsoft.Extensions.Configuration;
-using Photobook.Common.Configuration;
-using FluentValidation;
+using System.Reflection;
 
 namespace Photobook.Logic
 {

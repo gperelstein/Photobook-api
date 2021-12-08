@@ -2,7 +2,7 @@
 using System;
 using System.Security.Claims;
 
-namespace Photobook.Common.Services
+namespace Photobook.Common.Services.CurrentUser
 {
     public class CurrentUserService : ICurrentUserService
     {

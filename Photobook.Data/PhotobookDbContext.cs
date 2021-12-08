@@ -12,7 +12,7 @@ namespace Photobook.Data
 {
     public class PhotobookDbContext : KeyApiAuthorizationDbContext<PhotobookUser, PhotobookRole, Guid>
     {
-        public DbSet<Profile> Profiles { get; set; }
+        public virtual DbSet<Profile> Profiles { get; set; }
 
         public PhotobookDbContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {

@@ -85,10 +85,6 @@ namespace Photobook.Api
                 });
                 options.OperationProcessors.Add(new OperationSecurityScopeProcessor("oauth2"));
             });
-            services.Configure<RouteOptions>(options =>
-            {
-                options.LowercaseUrls = true;
-            });
             services.AddControllers().AddFluentValidation();
         }
 

@@ -65,7 +65,7 @@ namespace Photobook.Api.Controllers
             return Ok(response.Value);
         }
 
-        [HttpPut("profile-picture")]
+        [HttpPut("profilePicture")]
         [Produces("application/json")]
         [OpenApiOperation(
             summary: "Update the user profile picture",
@@ -84,6 +84,27 @@ namespace Photobook.Api.Controllers
             }
 
             return Ok(response.Value);
+        }
+
+        [HttpPut("changePassword")]
+        [Produces("application/json")]
+        [OpenApiOperation(
+            summary: "Change the user password",
+            description: "Change the user password"
+        )]
+        [SwaggerResponse(HttpStatusCode.NoContent, typeof(ProfileResponse), Description = "Ok")]
+        [SwaggerResponse(HttpStatusCode.BadRequest, typeof(Error), Description = "Error while processing the request")]
+        [SwaggerResponse(HttpStatusCode.InternalServerError, typeof(Error), Description = "Error while processing the request")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePassword.Command request, CancellationToken cancellationToken)
+        {
+            var response = await _mediator.Send(request, cancellationToken);
+
+            if (!response.Success)
+            {
+                return StatusCode((int)response.StatusCode, response.Error);
+            }
+
+            return NoContent();
         }
     }
 }

@@ -2,10 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using NJsonSchema.Annotations;
 using Photobook.Common.HandlersResponses;
-using Photobook.Common.Services;
+using Photobook.Common.Services.CurrentUser;
 using Photobook.Data;
 using Photobook.Logic.Features.UsersSelf.Responses;
-using System.IO;
+using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,27 +30,47 @@ namespace Photobook.Logic.Features.UsersSelf
 
             public async Task<Response<ProfileResponse>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var userId = _currentUserService.GetUserId();
+                try
+                {
+                    var userId = _currentUserService.GetUserId();
 
-                var profile = await _context.Profiles.FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
+                    var profile = await _context.Profiles
+                                                    .Include(x => x.User)
+                                                    .FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
 
-                if (profile == null)
+                    if (profile == null)
+                    {
+                        return new Response<ProfileResponse>(
+                                new Error(ErrorCodes.InvalidUser,
+                                ErrorMessages.InvalidUser,
+                                HttpStatusCode.BadRequest));
+                    }
+
+                    if (!profile.User.IsActive)
+                    {
+                        return new Response<ProfileResponse>(
+                            new Error(ErrorCodes.UserNotActive,
+                            ErrorMessages.UserNotActive,
+                            HttpStatusCode.BadRequest));
+                    }
+
+                    var profileResponse = new ProfileResponse
+                    {
+                        FirstName = profile.FirstName,
+                        LastName = profile.LastName,
+                        Description = profile.Description,
+                        ProfilePicture = profile.ProfilePicture
+                    };
+
+                    return new Response<ProfileResponse>(profileResponse);
+                }
+                catch(Exception ex)
                 {
                     return new Response<ProfileResponse>(
-                            new Error(ErrorCodes.InvalidToken,
-                            ErrorMessages.InvalidToken,
-                            HttpStatusCode.BadRequest));
+                            new Error(ErrorCodes.UnexpectedError,
+                            ex.Message,
+                            HttpStatusCode.InternalServerError));
                 }
-
-                var profileResponse = new ProfileResponse
-                {
-                    FirstName = profile.FirstName,
-                    LastName = profile.LastName,
-                    Description = profile.Description,
-                    ProfilePicture = profile.ProfilePicture
-                };
-
-                return new Response<ProfileResponse>(profileResponse);
             }
         }
     }

@@ -1,21 +1,21 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NJsonSchema.Annotations;
-using Photobook.Data;
+using Photobook.Common.HandlersResponses;
 using Photobook.Common.Identity;
+using Photobook.Data;
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Photobook.Common.HandlersResponses;
-using System.Net;
-using FluentValidation;
 
 namespace Photobook.Logic.Features.Users
 {
-    public class RegisterUser
+    public class ResetPassword
     {
-        [JsonSchema("RegisterUserCommand")]
+        [JsonSchema("ResetPasswordCommand")]
         public class Command : IRequest<Response<Unit>>
         {
             public string Email { get; set; }
@@ -70,30 +70,27 @@ namespace Photobook.Logic.Features.Users
                             HttpStatusCode.BadRequest));
                     }
 
-                    if(user.IsActive)
+                    if (!user.IsActive)
                     {
                         return new Response<Unit>(
-                            new Error(ErrorCodes.UserAlreadyRegister,
-                            ErrorMessages.UserAlreadyRegister,
+                            new Error(ErrorCodes.UserNotActive,
+                            ErrorMessages.UserNotActive,
                             HttpStatusCode.BadRequest));
                     }
 
-                    user.IsActive = true;
-                    var result = await _userManager.ConfirmEmailAsync(user, request.Token);
+                    var result = await _userManager.ResetPasswordAsync(user, request.Token, request.Password);
 
                     if (!result.Succeeded)
                     {
                         return new Response<Unit>(
-                            new Error(ErrorCodes.InvalidToken,
-                            ErrorMessages.InvalidToken,
-                            HttpStatusCode.BadRequest));
+                            new Error(ErrorCodes.UnexpectedError,
+                            ErrorMessages.UnexpectedError,
+                            HttpStatusCode.InternalServerError));
                     }
-
-                    await _userManager.AddPasswordAsync(user, request.Password);
 
                     return new Response<Unit>(Unit.Value);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     return new Response<Unit>(
                             new Error(ErrorCodes.UnexpectedError,

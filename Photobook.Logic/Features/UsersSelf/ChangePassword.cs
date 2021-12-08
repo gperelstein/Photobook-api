@@ -1,66 +1,71 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NJsonSchema.Annotations;
-using Photobook.Data;
+using Photobook.Common.HandlersResponses;
 using Photobook.Common.Identity;
+using Photobook.Common.Services.CurrentUser;
+using Photobook.Data;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Photobook.Common.HandlersResponses;
-using System.Net;
-using FluentValidation;
 
-namespace Photobook.Logic.Features.Users
+namespace Photobook.Logic.Features.UsersSelf
 {
-    public class RegisterUser
+    public class ChangePassword
     {
-        [JsonSchema("RegisterUserCommand")]
+        [JsonSchema("ChangePasswordCommand")]
         public class Command : IRequest<Response<Unit>>
         {
-            public string Email { get; set; }
-            public string Password { get; set; }
-            public string Token { get; set; }
+            public string CurrentPassword { get; set; }
+            public string NewPassword { get; set; }
         }
 
         public class Validator : AbstractValidator<Command>
         {
             public Validator()
             {
-                RuleFor(x => x.Email)
-                    .Cascade(CascadeMode.Stop)
-                    .NotEmpty()
-                    .EmailAddress();
+                RuleFor(x => x.CurrentPassword)
+                        .Cascade(CascadeMode.Stop)
+                        .NotEmpty();
 
-                RuleFor(x => x.Password)
+                RuleFor(x => x.NewPassword)
                     .Cascade(CascadeMode.Stop)
                     .NotEmpty()
                     .Matches(@"\d")
                     .Matches(@"[a-z]")
                     .Matches(@"[A-Z]")
                     .Matches(@"[\^$*.[\]{}(\)?""!@#%&/\\,><':;|_~`]");
-
-                RuleFor(x => x.Token)
-                    .Cascade(CascadeMode.Stop)
-                    .NotEmpty();
             }
         }
 
         public class Handler : IRequestHandler<Command, Response<Unit>>
         {
-            private readonly UserManager<PhotobookUser> _userManager;
+            private readonly ICurrentUserService _currentUserService;
             private readonly PhotobookDbContext _context;
+            private readonly UserManager<PhotobookUser> _userManager;
 
-            public Handler(UserManager<PhotobookUser> userManager, PhotobookDbContext context)
+            public Handler(ICurrentUserService currentUserService,
+                PhotobookDbContext context,
+                UserManager<PhotobookUser> userManager)
             {
-                _userManager = userManager;
+                _currentUserService = currentUserService;
                 _context = context;
+                _userManager = userManager;
             }
+
             public async Task<Response<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 try
                 {
-                    var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
+                    var userId = _currentUserService.GetUserId();
+
+                    var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
 
                     if (user == null)
                     {
@@ -70,26 +75,23 @@ namespace Photobook.Logic.Features.Users
                             HttpStatusCode.BadRequest));
                     }
 
-                    if(user.IsActive)
+                    if (!user.IsActive)
                     {
                         return new Response<Unit>(
-                            new Error(ErrorCodes.UserAlreadyRegister,
-                            ErrorMessages.UserAlreadyRegister,
+                            new Error(ErrorCodes.UserNotActive,
+                            ErrorMessages.UserNotActive,
                             HttpStatusCode.BadRequest));
                     }
 
-                    user.IsActive = true;
-                    var result = await _userManager.ConfirmEmailAsync(user, request.Token);
+                    var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
 
                     if (!result.Succeeded)
                     {
                         return new Response<Unit>(
-                            new Error(ErrorCodes.InvalidToken,
-                            ErrorMessages.InvalidToken,
-                            HttpStatusCode.BadRequest));
+                            new Error(ErrorCodes.UnexpectedError,
+                            ErrorMessages.UnexpectedError,
+                            HttpStatusCode.InternalServerError));
                     }
-
-                    await _userManager.AddPasswordAsync(user, request.Password);
 
                     return new Response<Unit>(Unit.Value);
                 }
