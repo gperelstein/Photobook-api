@@ -61,7 +61,9 @@ namespace Photobook.Logic.Features.Users
             {
                 try
                 {
-                    var userProfile = await _context.Profiles.FirstOrDefaultAsync(x => x.User.Email == request.Email, cancellationToken);
+                    var userProfile = await _context.Profiles
+                                                    .Include(x => x.User)
+                                                    .FirstOrDefaultAsync(x => x.User.Email == request.Email, cancellationToken);
 
                     if (userProfile == null)
                     {
