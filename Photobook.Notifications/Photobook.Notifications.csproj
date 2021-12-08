@@ -12,9 +12,15 @@
   <ItemGroup>
     <None Remove="Templates\UserRegistration.html" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="Templates\InitiatePasswordResetNotification.html" />
+  </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Templates\UserRegistration.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\InitiatePasswordResetNotification.html" />
   </ItemGroup>
 
   <ItemGroup>
