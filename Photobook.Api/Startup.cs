@@ -121,11 +121,11 @@ namespace Photobook.Api
 
             app.UseRouting();
 
+            app.UseCors("CorsPolicy");
+
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseIdentityServer();
-
-            app.UseCors("CorsPolicy");
 
             app.UseEndpoints(endpoints =>
             {
