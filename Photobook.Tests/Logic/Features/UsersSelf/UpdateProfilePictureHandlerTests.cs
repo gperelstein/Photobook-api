@@ -44,13 +44,17 @@ namespace Photobook.Tests.Logic.Features.UsersSelf
                 Email = "Email",
                 IsActive = true
             };
+            var profileImage = new Image
+            {
+                Path = "ProfilePicture"
+            };
             var profile = new Profile
             {
                 User = user,
                 FirstName = "FirstName",
                 LastName = "LastName",
                 Description = "Description",
-                ProfilePicture = "ProfilePicture"
+                ProfileImage = profileImage
             };
             await _context.AddAsync(profile);
             await _context.SaveChangesAsync();
@@ -101,13 +105,17 @@ namespace Photobook.Tests.Logic.Features.UsersSelf
                 Email = "Email",
                 IsActive = false
             };
+            var profileImage = new Image
+            {
+                Path = "ProfilePicture"
+            };
             var profile = new Profile
             {
                 User = user,
                 FirstName = "FirstName",
                 LastName = "LastName",
                 Description = "Description",
-                ProfilePicture = "ProfilePicture"
+                ProfileImage = profileImage
             };
             await _context.AddAsync(profile);
             await _context.SaveChangesAsync();

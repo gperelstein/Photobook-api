@@ -56,6 +56,7 @@ namespace Photobook.Logic.Features.UsersSelf
 
                     var profile = await _context.Profiles
                                                     .Include(x => x.User)
+                                                    .Include(x => x.ProfileImage)
                                                     .FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
 
                     if (profile == null)
@@ -85,7 +86,7 @@ namespace Photobook.Logic.Features.UsersSelf
                         FirstName = profile.FirstName,
                         LastName = profile.LastName,
                         Description = profile.Description,
-                        ProfilePicture = profile.ProfilePicture
+                        ProfilePicture = profile.ProfileImage.Path
                     };
 
                     return new Response<ProfileResponse>(profileResponse);

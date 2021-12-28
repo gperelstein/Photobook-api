@@ -19,8 +19,10 @@ namespace Photobook.Data.Configurations
             builder.Property(x => x.Description)
                 .HasColumnType("nvarchar(max)");
 
-            builder.Property(x => x.ProfilePicture)
-                .HasColumnType("nvarchar(200)");
+            builder.HasOne(x => x.ProfileImage)
+                .WithOne()
+                .HasForeignKey<Profile>(x => x.ProfileImageId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.User)
                 .WithOne()

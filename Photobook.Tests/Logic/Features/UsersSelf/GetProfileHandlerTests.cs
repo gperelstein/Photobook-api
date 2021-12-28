@@ -34,13 +34,17 @@ namespace Photobook.Tests.Logic.Features.UsersSelf
                 Email = "Email",
                 IsActive = true
             };
+            var profileImage = new Image
+            {
+                Path = "ProfilePicture"
+            };
             var profile = new Profile
             {
                 User = user,
                 FirstName = "FirstName",
                 LastName = "LastName",
                 Description = "Description",
-                ProfilePicture = "ProfilePicture"
+                ProfileImage = profileImage
             };
             await _context.AddAsync(profile);
             await _context.SaveChangesAsync();
@@ -55,7 +59,7 @@ namespace Photobook.Tests.Logic.Features.UsersSelf
             Assert.Equal(profile.FirstName, profileResponse.FirstName);
             Assert.Equal(profile.LastName, profileResponse.LastName);
             Assert.Equal(profile.Description, profileResponse.Description);
-            Assert.Equal(profile.ProfilePicture, profileResponse.ProfilePicture);
+            Assert.Equal(profile.ProfileImage.Path, profileResponse.ProfilePicture);
         }
 
         [Fact]
@@ -81,13 +85,17 @@ namespace Photobook.Tests.Logic.Features.UsersSelf
                 Email = "Email",
                 IsActive = false
             };
+            var profileImage = new Image
+            {
+                Path = "ProfilePicture"
+            };
             var profile = new Profile
             {
                 User = user,
                 FirstName = "FirstName",
                 LastName = "LastName",
                 Description = "Description",
-                ProfilePicture = "ProfilePicture"
+                ProfileImage = profileImage
             };
             await _context.AddAsync(profile);
             await _context.SaveChangesAsync();

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using NJsonSchema.Annotations;
 using Photobook.Common.HandlersResponses;
+using Photobook.Common.Models;
 using Photobook.Common.Services.CurrentUser;
 using Photobook.Common.Services.Files;
 using Photobook.Data;
@@ -65,6 +66,7 @@ namespace Photobook.Logic.Features.UsersSelf
 
                     var profile = await _context.Profiles
                                                     .Include(x => x.User)
+                                                    .Include(x => x.ProfileImage)
                                                     .FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
 
                     if (profile == null)
@@ -83,8 +85,14 @@ namespace Photobook.Logic.Features.UsersSelf
                             HttpStatusCode.BadRequest));
                     }
 
+                    if (profile.ProfileImage == null)
+                    {
+                        profile.ProfileImage = new Image();
+                    }
+
                     var imagePath = await _profilePicturesService.SaveFile(request.ProfilePicture, userId.ToString(), cancellationToken);
-                    profile.ProfilePicture = imagePath;
+
+                    profile.ProfileImage.Path = imagePath;
 
                     await _context.SaveChangesAsync(cancellationToken);
 
@@ -93,7 +101,7 @@ namespace Photobook.Logic.Features.UsersSelf
                         FirstName = profile.FirstName,
                         LastName = profile.LastName,
                         Description = profile.Description,
-                        ProfilePicture = profile.ProfilePicture
+                        ProfilePicture = profile.ProfileImage.Path
                     };
 
                     return new Response<ProfileResponse>(profileResponse);

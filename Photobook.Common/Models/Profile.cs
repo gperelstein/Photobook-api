@@ -8,8 +8,9 @@ namespace Photobook.Common.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string ProfilePicture { get; set; }
         public string Description { get; set; }
+        public Guid? ProfileImageId { get; set; }
+        public Image ProfileImage { get; set; }
         public Guid UserId { get; set; }
         public PhotobookUser User { get; set; }
     }
