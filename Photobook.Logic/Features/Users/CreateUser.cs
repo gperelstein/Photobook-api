@@ -95,7 +95,7 @@ namespace Photobook.Logic.Features.Users
                     };
 
                     await _context.Profiles.AddAsync(profile, cancellationToken);
-                    await _context.SaveChangesAsync(cancellationToken);
+                    await _context.SaveChangesAsync(newUser.Id, cancellationToken);
 
                     var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
 

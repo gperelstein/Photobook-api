@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
 using Moq;
+using Photobook.Common.Services.CurrentUser;
+using Photobook.Common.Services.DateTimeUtil;
 using Photobook.Data;
 using System;
 using System.Collections.Generic;
@@ -23,12 +25,18 @@ namespace Photobook.Tests.Helpers
             operationalStoreOptions.Setup(x => x.Value)
                 .Returns(new OperationalStoreOptions());
 
-            return new PhotobookDbContext(optionsBuilder.Options, operationalStoreOptions.Object);
+            var currentUserService = new Mock<ICurrentUserService>();
+            var dateTimeService = new Mock<IDateTimeService>();
+
+            return new PhotobookDbContext(optionsBuilder.Options,
+                operationalStoreOptions.Object,
+                currentUserService.Object,
+                dateTimeService.Object);
         }
 
         public static Mock<PhotobookDbContext> CreateMockContext()
         {
-            return new Mock<PhotobookDbContext>(new DbContextOptions<PhotobookDbContext>(), null);
+            return new Mock<PhotobookDbContext>(new DbContextOptions<PhotobookDbContext>(), null, null, null);
         }
     }
 }

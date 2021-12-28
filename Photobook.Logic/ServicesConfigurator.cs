@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Photobook.Common.Configuration;
 using Photobook.Common.Identity;
 using Photobook.Common.Services.CurrentUser;
+using Photobook.Common.Services.DateTimeUtil;
 using Photobook.Common.Services.Files;
 using Photobook.Data;
 using Photobook.Logic.Identity;
@@ -57,6 +58,7 @@ namespace Photobook.Logic
 
             services.AddTransient<ICurrentUserService, CurrentUserService>();
             services.AddTransient<IFilesService, ProfilePicturesService>();
+            services.AddTransient<IDateTimeService, DateTimeService>();
             services.AddTransient<IFileSystem, FileSystem>();
 
             return services;
